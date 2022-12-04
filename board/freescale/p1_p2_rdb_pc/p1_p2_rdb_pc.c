@@ -206,7 +206,7 @@ int board_early_init_f(void)
 	clrbits_be32(&gur->sdhcdcr, SDHCDCR_CD_INV);
 
 	clrbits_be32(&gur->pmuxcr, MPC85xx_PMUXCR_SD_DATA);
-#if defined(CONFIG_TARGET_P1020RDB_PD) || defined(CONFIG_TARGET_P1020RDB_PC)
+#if 0
 	setbits_be32(&gur->pmuxcr, MPC85xx_PMUXCR_TDM_ENA);
 #endif
 

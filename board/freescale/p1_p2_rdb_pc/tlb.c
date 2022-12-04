@@ -75,10 +75,10 @@ struct fsl_e_tlb_entry tlb_table[] = {
 #endif
 
 #if defined(CONFIG_SYS_RAMBOOT) || !CONFIG_IS_ENABLED(COMMON_INIT_DDR)
-	/* **M** - 1G DDR for eSDHC/eSPI/NAND boot */
+	/* **M** - 256M DDR for eSDHC/eSPI/NAND boot */
 	SET_TLB_ENTRY(1, CONFIG_SYS_DDR_SDRAM_BASE, CONFIG_SYS_DDR_SDRAM_BASE,
 			MAS3_SX|MAS3_SW|MAS3_SR, MAS2_M,
-			0, 8, BOOKE_PAGESZ_1G, 1),
+			0, 8, BOOKE_PAGESZ_256M, 1),
 
 #if 0
 	/* **M** - 2G DDR on P1020MBG, map the second 1G */
