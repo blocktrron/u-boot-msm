@@ -80,7 +80,7 @@ struct fsl_e_tlb_entry tlb_table[] = {
 			MAS3_SX|MAS3_SW|MAS3_SR, MAS2_M,
 			0, 8, BOOKE_PAGESZ_1G, 1),
 
-#if defined(CONFIG_TARGET_P1020RDB_PD)
+#if 0
 	/* **M** - 2G DDR on P1020MBG, map the second 1G */
 	SET_TLB_ENTRY(1, CONFIG_SYS_DDR_SDRAM_BASE + 0x40000000,
 			CONFIG_SYS_DDR_SDRAM_BASE + 0x40000000,
