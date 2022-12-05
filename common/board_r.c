@@ -325,7 +325,7 @@ static int initr_flash(void)
 		puts("*** failed ***\n");
 #ifdef CONFIG_PPC
 		/* Why does PPC do this? */
-		hang();
+		// hang();
 #endif
 		return -1;
 	}
@@ -799,7 +799,7 @@ init_fnc_t init_sequence_r[] = {
 #endif
 	power_init_board,
 #ifndef CONFIG_SYS_NO_FLASH
-	initr_flash,
+	//initr_flash,
 #endif
 	INIT_FUNC_WATCHDOG_RESET
 #if defined(CONFIG_PPC) || defined(CONFIG_X86)
