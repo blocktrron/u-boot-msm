@@ -177,7 +177,11 @@ void board_gpio_init(void)
 	 * GPIO13  SLIC Reset
 	 */
 
-	setbits_be32(&pgpio->gpdir, 0x02130000);
+	out_be32(&pgpio->gpdir, 0xf8780000);
+	out_be32(&pgpio->gpodr, 0x00000000);
+	out_be32(&pgpio->gpdat, 0x1b600000);
+
+#if 0
 #if !defined(CONFIG_SYS_RAMBOOT) && !defined(CONFIG_SPL)
 	/* init DDR3 reset signal */
 	setbits_be32(&pgpio->gpdir, 0x00200000);
@@ -201,18 +205,19 @@ void board_gpio_init(void)
 	setbits_be32(&pgpio->gpdat, 0x00040000);
 #endif
 #endif
+#endif
 }
 
 int board_early_init_f(void)
 {
 	ccsr_gur_t *gur = (void *)(CONFIG_SYS_MPC85xx_GUTS_ADDR);
 
-	setbits_be32(&gur->pmuxcr,
-			(MPC85xx_PMUXCR_SDHC_CD | MPC85xx_PMUXCR_SDHC_WP));
+	//setbits_be32(&gur->pmuxcr,
+	//		(MPC85xx_PMUXCR_SDHC_CD | MPC85xx_PMUXCR_SDHC_WP));
 	clrbits_be32(&gur->sdhcdcr, SDHCDCR_CD_INV);
 
 	clrbits_be32(&gur->pmuxcr, MPC85xx_PMUXCR_SD_DATA);
-	setbits_be32(&gur->pmuxcr, MPC85xx_PMUXCR_TDM_ENA);
+	// setbits_be32(&gur->pmuxcr, MPC85xx_PMUXCR_TDM_ENA);
 
 	board_gpio_init();
 	board_cpld_init();
