@@ -740,13 +740,15 @@
 #define CONFIG_MII		/* MII PHY management */
 #define CONFIG_TSEC1
 #define CONFIG_TSEC1_NAME	"eTSEC1"
+#if 0
 #define CONFIG_TSEC2
 #define CONFIG_TSEC2_NAME	"eTSEC2"
 #define CONFIG_TSEC3
 #define CONFIG_TSEC3_NAME	"eTSEC3"
+#endif
 
-#define TSEC1_PHY_ADDR	2
-#define TSEC2_PHY_ADDR	0
+#define TSEC1_PHY_ADDR	0
+#define TSEC2_PHY_ADDR	2
 #define TSEC3_PHY_ADDR	1
 
 #define TSEC1_FLAGS	(TSEC_GIGABIT | TSEC_REDUCED)
@@ -762,8 +764,10 @@
 #define CONFIG_PHY_GIGE	1	/* Include GbE speed/duplex detection */
 
 #define CONFIG_HAS_ETH0
+#if 0
 #define CONFIG_HAS_ETH1
 #define CONFIG_HAS_ETH2
+#endif
 #endif /* CONFIG_TSEC_ENET */
 
 #ifdef CONFIG_QE
