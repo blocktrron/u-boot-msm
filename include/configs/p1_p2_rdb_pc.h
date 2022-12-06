@@ -982,6 +982,10 @@ pciboot=i2c dev 1; i2c mw 18 1 __SW_BOOT_PCIE 1; \
 i2c mw 18 3 __SW_BOOT_MASK 1; reset
 #endif
 
+/* 1024kB u-boot - 3*128kB uenv0 - 3*128kB uenv1 - 72MB UBI*/
+#define MTDPARTS_DEFAULT	"mtdparts=nand0:0x100000@0x0(uboot),0x60000@0x100000(ubootenv),0x60000@0x160000(ubootres),0x4800000@0x1c0000(ubi)"
+#define MTDIDS_DEFAULT		"nand0=nand0"
+
 #define	CONFIG_EXTRA_ENV_SETTINGS	\
 "netdev=eth0\0"	\
 "uboot=" __stringify(CONFIG_UBOOTPATH) "\0"	\
