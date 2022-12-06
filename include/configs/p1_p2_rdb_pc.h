@@ -877,6 +877,7 @@
 /*
  * USB
  */
+#if 0
 #define CONFIG_HAS_FSL_DR_USB
 
 #if defined(CONFIG_HAS_FSL_DR_USB)
@@ -904,6 +905,7 @@
 #define CONFIG_CMD_EXT2
 #define CONFIG_CMD_FAT
 #define CONFIG_DOS_PARTITION
+#endif
 #endif
 
 #undef CONFIG_WATCHDOG	/* watchdog disabled */
