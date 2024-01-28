@@ -41,4 +41,4 @@ jobs:
               uses: actions/upload-artifact@v2
               with:
                 name: u-boot
-                path: u-boot.bin
+                path: u-boot-with-spl.bin
