@@ -29,7 +29,7 @@ jobs:
             
             - name: Create Config
               run: |
-                make P1020RDB-PD_config
+                make P1020RDB-PD_NAND_config
               
             - name: Compile U-Boot
               run: make CROSS_COMPILE="/tmp/OpenWrt-SDK-mpc85xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2/staging_dir/toolchain-powerpc_8540_gcc-4.8-linaro_uClibc-0.9.33.2/bin/powerpc-openwrt-linux-"
