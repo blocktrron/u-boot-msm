@@ -1,0 +1,69 @@
+name: Compile U-Boot
+
+on:
+    push:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        strategy: 
+          matrix:
+            target: [ NAND, RAMBOOT ]
+        container:
+            image: debian:buster
+
+        steps:
+          # Do this before fetching the code
+          - name: Install build dependendies
+            run: |
+              apt-get update
+              apt-get install -y build-essential git flex bison wget git
+
+          - name: Checkout code
+            uses: actions/checkout@v4
+            with:
+              fetch-depth: 0
+              fetch-tags: true
+
+          - name: Fetch upstream tags
+            run: |
+              git config --global --add safe.directory '*'
+              git remote add upstream https://github.com/u-boot/u-boot.git
+              git fetch upstream --tags  
+
+          - name: Download OpenWrt 14.07 SDK
+            run: |
+              wget -O /tmp/sdk.tar.bz2 https://archive.openwrt.org/barrier_breaker/14.07/mpc85xx/p1020/OpenWrt-SDK-mpc85xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2.tar.bz2 
+          
+          - name: Extract OpenWrt 14.07 SDK
+            run: |
+              tar xf /tmp/sdk.tar.bz2 -C /tmp
+          
+          - name: Create Config
+            run: |
+              make P1020RDB-PD_${{ matrix.target }}_config
+            
+          - name: Compile U-Boot
+            run: make CROSS_COMPILE="/tmp/OpenWrt-SDK-mpc85xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2/staging_dir/toolchain-powerpc_8540_gcc-4.8-linaro_uClibc-0.9.33.2/bin/powerpc-openwrt-linux-"
+
+          - name: List Output Folder
+            run: ls -la
+          
+          - name: Align NAND loader to blocksize
+            if: matrix.target == 'NAND'
+            run: |
+              dd if=u-boot-with-spl.bin of=u-boot-with-spl-aligned.bin bs=786432 count=1
+
+          - name: Upload RAM
+            if: matrix.target == 'RAMBOOT'
+            uses: actions/upload-artifact@v4
+            with:
+              name: u-boot-ram
+              path: u-boot.bin
+
+          - name: Upload NAND
+            if: matrix.target == 'NAND'
+            uses: actions/upload-artifact@v4
+            with:
+              name: u-boot-nand
+              path: u-boot-with-spl-aligned.bin
