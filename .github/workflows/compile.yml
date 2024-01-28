@@ -1,0 +1,41 @@
+name: Compile U-Boot
+
+on:
+    push:
+
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        container:
+            image: debian:buster
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Set up toolchain
+              run: |
+                sudo apt-get update
+                sudo apt-get install -y build-essential git flex bison
+
+            - name: Download OpenWrt 14.07 SDK
+              run: |
+                wget https://archive.openwrt.org/barrier_breaker/14.07/mpc85xx/p1020/OpenWrt-SDK-mpc85xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2.tar.bz2 /tmp
+            
+            - name: Extract OpenWrt 14.07 SDK
+              run: |
+                tar xf -C /tmp /tmp/OpenWrt-SDK-mpc85xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2.tar.bz2
+            
+            - name: Create Config
+              run: |
+                make P1020RDB-PD_config
+              
+            - name: Compile U-Boot
+              run: make
+
+            - name: Upload artifact
+              uses: actions/upload-artifact@v2
+              with:
+                name: u-boot
+                path: u-boot.bin
