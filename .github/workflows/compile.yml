@@ -21,7 +21,7 @@ jobs:
 
             - name: Download OpenWrt 14.07 SDK
               run: |
-                wget https://archive.openwrt.org/barrier_breaker/14.07/mpc85xx/p1020/OpenWrt-SDK-mpc85xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2.tar.bz2 /tmp
+                wget -O /tmp https://archive.openwrt.org/barrier_breaker/14.07/mpc85xx/p1020/OpenWrt-SDK-mpc85xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2.tar.bz2 
             
             - name: Extract OpenWrt 14.07 SDK
               run: |
