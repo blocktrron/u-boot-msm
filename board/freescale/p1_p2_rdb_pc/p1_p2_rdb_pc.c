@@ -179,7 +179,7 @@ void board_gpio_init(void)
 
 	out_be32(&pgpio->gpdir, 0xf8780000);
 	out_be32(&pgpio->gpodr, 0x00000000);
-	out_be32(&pgpio->gpdat, 0x1b600000);
+	setbits_be32(&pgpio->gpdat, 0x18780000);
 
 #if 0
 #if !defined(CONFIG_SYS_RAMBOOT) && !defined(CONFIG_SPL)
