@@ -154,10 +154,10 @@ int do_msm_preboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	puts("\nReset was pressed, booting into recovery mode...\n");
 
 	/* We have an environment already. Execute recoverycmd. */
-	// ret = run_command("run recoverycmd", 0);
+	ret = run_command("run recoverycmd", 0);
 
 	/* Reset board */
-	// run_command("reset", 0);
+	run_command("reset", 0);
 
 	return 0;
 }
