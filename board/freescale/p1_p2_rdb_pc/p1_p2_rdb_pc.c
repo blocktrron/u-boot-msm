@@ -177,7 +177,20 @@ void board_gpio_init(void)
 	 * GPIO13  SLIC Reset
 	 */
 
+#if 0
 	setbits_be32(&pgpio->gpdir, 0x02130000);
+#endif
+
+	out_be32(&pgpio->gpdir, 0xf8780000);
+	in_be32(&pgpio->gpdir);
+
+	out_be32(&pgpio->gpodr, 0x00000000);
+	in_be32(&pgpio->gpdir);
+
+	setbits_be32(&pgpio->gpdat, 0x18780000);
+	in_be32(&pgpio->gpdat);
+
+#if 0
 #if !defined(CONFIG_SYS_RAMBOOT) && !defined(CONFIG_SPL)
 	/* init DDR3 reset signal */
 	setbits_be32(&pgpio->gpdir, 0x00200000);
@@ -187,6 +200,7 @@ void board_gpio_init(void)
 	setbits_be32(&pgpio->gpdat, 0x00200000);
 	udelay(1000);
 	clrbits_be32(&pgpio->gpdir, 0x00200000);
+#endif
 #endif
 
 #ifdef CONFIG_VSC7385_ENET
@@ -201,27 +215,34 @@ void board_gpio_init(void)
 	setbits_be32(&pgpio->gpdat, 0x00040000);
 #endif
 #endif
+
 }
 
 int board_early_init_f(void)
 {
 	ccsr_gur_t *gur = (void *)(CONFIG_SYS_MPC85xx_GUTS_ADDR);
 
+#if 0
 	setbits_be32(&gur->pmuxcr,
 			(MPC85xx_PMUXCR_SDHC_CD | MPC85xx_PMUXCR_SDHC_WP));
 	clrbits_be32(&gur->sdhcdcr, SDHCDCR_CD_INV);
 
 	clrbits_be32(&gur->pmuxcr, MPC85xx_PMUXCR_SD_DATA);
 	setbits_be32(&gur->pmuxcr, MPC85xx_PMUXCR_TDM_ENA);
+#endif
 
 	board_gpio_init();
+
+#if 0
 	board_cpld_init();
+#endif
 
 	return 0;
 }
 
 int checkboard(void)
 {
+#if 0
 	struct cpld_data *cpld_data = (void *)(CONFIG_SYS_CPLD_BASE);
 	ccsr_gur_t *gur = (void *)(CONFIG_SYS_MPC85xx_GUTS_ADDR);
 	u8 in, out, io_config, val;
@@ -274,7 +295,9 @@ int checkboard(void)
 		puts("SD/MMC : 4-bit Mode\n");
 		puts("eSPI : Enabled\n");
 	}
-
+#else
+	printf("Board: %s\n", CONFIG_BOARDNAME);
+#endif
 	return 0;
 }
 
