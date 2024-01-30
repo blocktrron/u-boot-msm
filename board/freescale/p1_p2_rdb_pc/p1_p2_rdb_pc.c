@@ -187,7 +187,7 @@ void board_gpio_init(void)
 	out_be32(&pgpio->gpodr, 0x00000000);
 	in_be32(&pgpio->gpdir);
 
-	setbits_be32(&pgpio->gpdat, 0x18780000);
+	setbits_be32(&pgpio->gpdat, 0x78780000);
 	in_be32(&pgpio->gpdat);
 
 #if 0
