@@ -68,7 +68,7 @@ int do_msm_led(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 			return CMD_RET_USAGE;
 	}
 
-	if (animation == MSM_ANIMATION_PREBOOT)
+	if (animation == MSM_ANIMATION_PREBOOT) {
 		#define LED_TOGGLE_DELAY	100
 		#define LED_TOGGLE_COUNT	3
 		for (i = 0; i < LED_TOGGLE_COUNT; i++) {
