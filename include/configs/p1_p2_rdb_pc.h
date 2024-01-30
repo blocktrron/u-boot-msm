@@ -995,6 +995,7 @@ i2c mw 18 3 __SW_BOOT_MASK 1; reset
 "boot_nand=mtdparts default && ubi part ubi && ubi read $loadaddr kernel && bootm $loadaddr\0"	\
 "boot_tftp=tftpboot $loadaddr msm460-initramfs.bin && bootm $loadaddr\0"	\
 "flash_ubi=mtdparts default && tftpboot $loadaddr msm460-factory.bin && nand erase.part ubi && nand write $loadaddr ubi $filesize\0"	\
+"recoverycmd=run flash_ubi\0"	\
 "fdt_high=0x3000000\0"
 
 #if 0

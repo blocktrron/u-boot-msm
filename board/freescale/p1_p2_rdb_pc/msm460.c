@@ -43,8 +43,14 @@ static void set_led(int mask, int val)
 	in_be32(&pgpio->gpdat);
 }
 
+enum animations {
+	MSM_ANIMATION_PREBOOT,
+	MSM_ANIMATION_RECOVERY,
+};
+
 int do_msm_led(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
+
 	int i;
 
 	#define LED_TOGGLE_DELAY	100
@@ -77,7 +83,7 @@ int do_msm_led(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 }
 
 U_BOOT_CMD(
-	msm_led, CONFIG_SYS_MAXARGS, 0, do_msm_led,
+	msmled, CONFIG_SYS_MAXARGS, 0, do_msm_led,
 	"Show LED animation",
 	"Show LED animation"
 );
@@ -88,32 +94,76 @@ static int msm_read_reset_button(void)
 	return !!(in_be32(&pgpio->gpdat) & MSM_GPIO(5));
 }
 
-int do_msm_preboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+int do_msm_reset(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
+	unsigned int duration = 5;
+	int led_state = 1;
+	int ret;
 	int i;
 
-	/* Display boot animation */
-	run_command("msm_led boot", 0);
+	if (argc == 2)
+		duration = simple_strtoul(argv[1], NULL, 10);
 
-	puts("Press reset button to enter recovery mode...\n");
+	printf("Press reset button for %u seconds.\n", duration);
 
 	/* Read reset-button value */
-	for (i = 0; i < 100; i++) {
+	for (i = 0; i < duration * 100; i++) {
 		if (!msm_read_reset_button()) {
-			puts("\nContinuing boot...\n");
-			return 0;
+			set_led(MSM_GPIO(0), 1);
+			return 1;
 		}
 		mdelay(10);
 		puts(".");
+		set_led(MSM_GPIO(0), led_state);
+		led_state = !led_state;
 	}
 
 	/* Reset was pressed */
-	puts("\nReset was pressed, booting into recovery mode...\n");
+	puts("\nReset was pressed.\n");
+
+	set_led(MSM_GPIO(0), 1);
+
 	return 0;
 }
 
 U_BOOT_CMD(
-	msm_preboot, CONFIG_SYS_MAXARGS, 0, do_msm_preboot,
+	msmrst, CONFIG_SYS_MAXARGS, 0, do_msm_reset,
+	"Check reset button state",
+	"Return 0 if reset button is pressed, 1 otherwise"
+);
+
+int do_msm_preboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+{
+	int ret;
+	int i;
+
+	puts("Hewlett-Packard MSM460 Pre-Boot\n");
+
+	/* Display boot animation */
+	run_command("msm_led preboot", 0);
+
+	puts("Press reset button to enter recovery mode...\n");
+
+	ret = run_command("msm_rst 5", 0);
+	if (ret) {
+		puts("Reset button not pressed, continuing boot...\n");
+		return 0;
+	}
+
+	/* Reset was pressed */
+	puts("\nReset was pressed, booting into recovery mode...\n");
+
+	/* We have an environment already. Execute recoverycmd. */
+	// ret = run_command("run recoverycmd", 0);
+
+	/* Reset board */
+	// run_command("reset", 0);
+
+	return 0;
+}
+
+U_BOOT_CMD(
+	msmpb, CONFIG_SYS_MAXARGS, 0, do_msm_preboot,
 	"Recovery preboot procedure",
 	"Recovery preboot procedure"
 );
