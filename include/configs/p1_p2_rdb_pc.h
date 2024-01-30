@@ -64,12 +64,10 @@
  * 011101 800 800 400 667 PCIe-2 Core0 boot; Core1 hold-off
  */
 #if defined(CONFIG_P1020RDB_PD)
-#define CONFIG_BOARDNAME "P1020RDB-PD"
+#define CONFIG_BOARDNAME "HP MSM460"
 #define CONFIG_NAND_FSL_ELBC
 #define CONFIG_P1020
 #define CONFIG_SPI_FLASH
-#define CONFIG_VSC7385_ENET
-#define CONFIG_SLIC
 #define __SW_BOOT_MASK		0x03
 #define __SW_BOOT_NOR		0x64
 #define __SW_BOOT_SPI		0x34
@@ -222,8 +220,8 @@
 #define CONFIG_SPL_TEXT_BASE		0xf8f81000
 #define CONFIG_SYS_MPC85XX_NO_RESETVEC
 #define CONFIG_SYS_NAND_U_BOOT_SIZE	(832 << 10)
-#define CONFIG_SYS_NAND_U_BOOT_DST	(0x11000000)
-#define CONFIG_SYS_NAND_U_BOOT_START	(0x11000000)
+#define CONFIG_SYS_NAND_U_BOOT_DST	(0x5000000)
+#define CONFIG_SYS_NAND_U_BOOT_START	(0x5000000)
 #define CONFIG_SYS_NAND_U_BOOT_OFFS	((128 + 128) << 10)
 #elif defined(CONFIG_SPL_BUILD)
 #define CONFIG_SPL_INIT_MINIMAL
@@ -242,7 +240,7 @@
 #define CONFIG_SPL_PAD_TO		0x20000
 #define CONFIG_TPL_PAD_TO		0x20000
 #define CONFIG_SPL_TARGET		"u-boot-with-spl.bin"
-#define CONFIG_SYS_TEXT_BASE		0x11001000
+#define CONFIG_SYS_TEXT_BASE		0x5001000
 #define CONFIG_SYS_LDSCRIPT	"arch/powerpc/cpu/mpc85xx/u-boot-nand.lds"
 #endif
 
@@ -326,14 +324,11 @@
 /* DDR Setup */
 #define CONFIG_SYS_FSL_DDR3
 #define CONFIG_SYS_DDR_RAW_TIMING
-#define CONFIG_DDR_SPD
-#define CONFIG_SYS_SPD_BUS_NUM 1
-#define SPD_EEPROM_ADDRESS 0x52
 #undef CONFIG_FSL_DDR_INTERACTIVE
 
 #if (defined(CONFIG_P1020MBG) || defined(CONFIG_P1020RDB_PD))
-#define CONFIG_SYS_SDRAM_SIZE_LAW	LAW_SIZE_2G
-#define CONFIG_CHIP_SELECTS_PER_CTRL	2
+#define CONFIG_SYS_SDRAM_SIZE_LAW	LAW_SIZE_256M
+#define CONFIG_CHIP_SELECTS_PER_CTRL	1
 #else
 #define CONFIG_SYS_SDRAM_SIZE_LAW	LAW_SIZE_1G
 #define CONFIG_CHIP_SELECTS_PER_CTRL	1
@@ -743,13 +738,15 @@
 #define CONFIG_MII		/* MII PHY management */
 #define CONFIG_TSEC1
 #define CONFIG_TSEC1_NAME	"eTSEC1"
+#if 0
 #define CONFIG_TSEC2
 #define CONFIG_TSEC2_NAME	"eTSEC2"
 #define CONFIG_TSEC3
 #define CONFIG_TSEC3_NAME	"eTSEC3"
+#endif
 
-#define TSEC1_PHY_ADDR	2
-#define TSEC2_PHY_ADDR	0
+#define TSEC1_PHY_ADDR	0
+#define TSEC2_PHY_ADDR	2
 #define TSEC3_PHY_ADDR	1
 
 #define TSEC1_FLAGS	(TSEC_GIGABIT | TSEC_REDUCED)
@@ -765,8 +762,10 @@
 #define CONFIG_PHY_GIGE	1	/* Include GbE speed/duplex detection */
 
 #define CONFIG_HAS_ETH0
+#if 0
 #define CONFIG_HAS_ETH1
 #define CONFIG_HAS_ETH2
+#endif
 #endif /* CONFIG_TSEC_ENET */
 
 #ifdef CONFIG_QE
@@ -838,6 +837,7 @@
 #endif
 #define CONFIG_ENV_IS_IN_NAND
 #define CONFIG_ENV_OFFSET	(1024 * 1024)
+#define CONFIG_ENV_OFFSET_REDUND	(CONFIG_ENV_OFFSET + CONFIG_ENV_SIZE)
 #define CONFIG_ENV_RANGE	(3 * CONFIG_ENV_SIZE)
 #elif defined(CONFIG_SYS_RAMBOOT)
 #define CONFIG_ENV_IS_NOWHERE	/* Store ENV in memory only */
@@ -867,9 +867,18 @@
 #define CONFIG_CMD_SETEXPR
 #define CONFIG_CMD_REGINFO
 
+#define CONFIG_RBTREE
+#define CONFIG_LZO
+#define CONFIG_CMD_UBI
+#define CONFIG_MTD_DEVICE
+#define CONFIG_MTD_PARTITIONS
+#define CONFIG_CMD_MTDPARTS
+#define CONFIG_LZMA
+
 /*
  * USB
  */
+#if 0
 #define CONFIG_HAS_FSL_DR_USB
 
 #if defined(CONFIG_HAS_FSL_DR_USB)
@@ -897,6 +906,7 @@
 #define CONFIG_CMD_EXT2
 #define CONFIG_CMD_FAT
 #define CONFIG_DOS_PARTITION
+#endif
 #endif
 
 #undef CONFIG_WATCHDOG	/* watchdog disabled */
@@ -970,6 +980,10 @@ i2c mw 18 3 __SW_BOOT_MASK 1; reset
 pciboot=i2c dev 1; i2c mw 18 1 __SW_BOOT_PCIE 1; \
 i2c mw 18 3 __SW_BOOT_MASK 1; reset
 #endif
+
+/* 1024kB u-boot - 3*128kB uenv0 - 3*128kB uenv1 - 72MB UBI*/
+#define MTDPARTS_DEFAULT	"mtdparts=nand0:0x100000@0x0(uboot),0x60000@0x100000(ubootenv),0x60000@0x160000(ubootres),0x4800000@0x1c0000(ubi)"
+#define MTDIDS_DEFAULT		"nand0=nand0"
 
 #define	CONFIG_EXTRA_ENV_SETTINGS	\
 "netdev=eth0\0"	\
