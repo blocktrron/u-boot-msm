@@ -44,42 +44,134 @@ static void set_led(int mask, int val)
 }
 
 enum animations {
-	MSM_ANIMATION_PREBOOT,
-	MSM_ANIMATION_RECOVERY,
+	MSM_ANIMATION_PREBOOT = 0,
+	MSM_ANIMATION_RECOVERY_START = 1,
+	MSM_ANIMATION_RECOVERY_SUCCESS = 1,
+	MSM_ANIMATION_BOOT = 3,
 };
 
 int do_msm_led(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
-
+	int animation = MSM_ANIMATION_PREBOOT;
 	int i;
 
-	#define LED_TOGGLE_DELAY	100
-	#define LED_TOGGLE_COUNT	3
+	if (argc > 1) {
+		if (!strcmp(argv[1], "preboot"))
+			animation = MSM_ANIMATION_PREBOOT;
+		else if (!strcmp(argv[1], "recovery-start"))
+			animation = MSM_ANIMATION_RECOVERY_START;
+		else if (!strcmp(argv[1], "recovery-success"))
+			animation = MSM_ANIMATION_RECOVERY_SUCCESS;
+		else if (!strcmp(argv[1], "boot"))
+			animation = MSM_ANIMATION_BOOT;
+		else
+			return CMD_RET_USAGE;
+	}
 
-	for (i = 0; i < LED_TOGGLE_COUNT; i++) {
-		set_led(MSM_GPIO(0), 1);
-		mdelay(LED_TOGGLE_DELAY);
+	if (animation == MSM_ANIMATION_PREBOOT)
+		#define LED_TOGGLE_DELAY	100
+		#define LED_TOGGLE_COUNT	3
+		for (i = 0; i < LED_TOGGLE_COUNT; i++) {
+			set_led(MSM_GPIO(0), 1);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(1), 1);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(2), 1);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(3), 1);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(0), 0);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(1), 0);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(2), 0);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(3), 0);
+			mdelay(LED_TOGGLE_DELAY);
+		}
+		#undef	LED_TOGGLE_DELAY
+		#undef	LED_TOGGLE_COUNT
+	} else if (animation == MSM_ANIMATION_RECOVERY_START) {
+		#define LED_TOGGLE_DELAY	50
+		#define LED_TOGGLE_COUNT	20
+		for (i = 0; i < LED_TOGGLE_COUNT; i++) {
+			set_led(MSM_GPIO(0), 1);
+			set_led(MSM_GPIO(1), 1);
+			set_led(MSM_GPIO(2), 1);
+			set_led(MSM_GPIO(3), 1);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(0), 0);
+			set_led(MSM_GPIO(1), 0);
+			set_led(MSM_GPIO(2), 0);
+			set_led(MSM_GPIO(3), 0);
+			mdelay(LED_TOGGLE_DELAY);
+		}
+
+		/* Keep Ethernet LED on */
 		set_led(MSM_GPIO(1), 1);
-		mdelay(LED_TOGGLE_DELAY);
-		set_led(MSM_GPIO(2), 1);
-		mdelay(LED_TOGGLE_DELAY);
-		set_led(MSM_GPIO(3), 1);
-		mdelay(LED_TOGGLE_DELAY);
+
+		#undef	LED_TOGGLE_DELAY
+		#undef	LED_TOGGLE_COUNT
+	} else if (animation == MSM_ANIMATION_RECOVERY_SUCCESS) {
+		#define LED_TOGGLE_DELAY	100
+		#define LED_TOGGLE_COUNT	5
+		for (i = 0; i < LED_TOGGLE_COUNT; i++) {
+			set_led(MSM_GPIO(0), 1);
+			set_led(MSM_GPIO(0), 1);
+			set_led(MSM_GPIO(1), 0);
+			set_led(MSM_GPIO(1), 0);
+			set_led(MSM_GPIO(2), 0);
+			set_led(MSM_GPIO(2), 0);
+			set_led(MSM_GPIO(3), 1);
+			set_led(MSM_GPIO(3), 1);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(0), 0);
+			set_led(MSM_GPIO(0), 0);
+			set_led(MSM_GPIO(1), 1);
+			set_led(MSM_GPIO(1), 1);
+			set_led(MSM_GPIO(2), 1);
+			set_led(MSM_GPIO(2), 1);
+			set_led(MSM_GPIO(3), 0);
+			set_led(MSM_GPIO(3), 0);
+			mdelay(LED_TOGGLE_DELAY);
+		}
+
 		set_led(MSM_GPIO(0), 0);
-		mdelay(LED_TOGGLE_DELAY);
+		set_led(MSM_GPIO(0), 0);
 		set_led(MSM_GPIO(1), 0);
-		mdelay(LED_TOGGLE_DELAY);
+		set_led(MSM_GPIO(1), 0);
 		set_led(MSM_GPIO(2), 0);
-		mdelay(LED_TOGGLE_DELAY);
+		set_led(MSM_GPIO(2), 0);
 		set_led(MSM_GPIO(3), 0);
-		mdelay(LED_TOGGLE_DELAY);
+		set_led(MSM_GPIO(3), 0);
+
+		#undef	LED_TOGGLE_DELAY
+		#undef	LED_TOGGLE_COUNT
+	} else if (animation == MSM_ANIMATION_BOOT) {
+		#define LED_TOGGLE_DELAY	100
+		#define LED_TOGGLE_COUNT	1
+		for (i = 0; i < LED_TOGGLE_COUNT; i++) {
+			set_led(MSM_GPIO(0), 1);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(0), 0);
+			set_led(MSM_GPIO(1), 1);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(1), 0);
+			set_led(MSM_GPIO(2), 1);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(2), 0);
+			set_led(MSM_GPIO(3), 1);
+			mdelay(LED_TOGGLE_DELAY);
+			set_led(MSM_GPIO(3), 0);
+		}
+
+		#undef	LED_TOGGLE_DELAY
+		#undef	LED_TOGGLE_COUNT
 	}
 
 	/* Turn on Power LED */
 	set_led(MSM_GPIO(0), 1);
 
-	#undef	LED_TOGGLE_DELAY
-	#undef	LED_TOGGLE_COUNT
 }
 
 U_BOOT_CMD(
@@ -101,7 +193,7 @@ int do_msm_reset(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	int ret;
 	int i;
 
-	if (argc == 2)
+	if (argc > 1)
 		duration = simple_strtoul(argv[1], NULL, 10);
 
 	printf("Press reset button for %u seconds.\n", duration);
@@ -114,8 +206,11 @@ int do_msm_reset(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 		}
 		mdelay(10);
 		puts(".");
-		set_led(MSM_GPIO(0), led_state);
-		led_state = !led_state;
+
+		if (i % 5 == 0) {
+			set_led(MSM_GPIO(0), led_state);
+			led_state = !led_state;
+		}
 	}
 
 	/* Reset was pressed */
@@ -139,7 +234,7 @@ int do_msm_preboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 	puts("Hewlett-Packard MSM460 Pre-Boot\n");
 
-	/* Display boot animation */
+	/* Display preboot animation */
 	run_command("msmled preboot", 0);
 
 	puts("Press reset button to enter recovery mode...\n");
@@ -147,16 +242,31 @@ int do_msm_preboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	ret = run_command("msmrst 5", 0);
 	if (ret) {
 		puts("Reset button not pressed, continuing boot...\n");
+
+		/* Display boot animation */
+		run_command("msmled boot", 0);
+
 		return 0;
 	}
 
 	/* Reset was pressed */
 	puts("\nReset was pressed, booting into recovery mode...\n");
 
+	/* Display recovery-start animation */
+	run_command("msmled recovery-start", 0);
+
 	/* We have an environment already. Execute recoverycmd. */
 	ret = run_command("run recoverycmd", 0);
 
-	/* Reset board */
+	/* Keep in Recovery-success animation if successful*/
+	if (!ret) {
+		while (1) {
+			run_command("msmled recovery-success", 0);
+		}
+	}
+		
+
+	/* Reset board on failure */
 	run_command("reset", 0);
 
 	return 0;
