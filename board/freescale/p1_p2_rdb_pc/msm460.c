@@ -140,11 +140,11 @@ int do_msm_preboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	puts("Hewlett-Packard MSM460 Pre-Boot\n");
 
 	/* Display boot animation */
-	run_command("msm_led preboot", 0);
+	run_command("msmled preboot", 0);
 
 	puts("Press reset button to enter recovery mode...\n");
 
-	ret = run_command("msm_rst 5", 0);
+	ret = run_command("msmrst 5", 0);
 	if (ret) {
 		puts("Reset button not pressed, continuing boot...\n");
 		return 0;
