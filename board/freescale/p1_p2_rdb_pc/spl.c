@@ -32,6 +32,7 @@ void board_init_f(ulong bootflag)
 
 	console_init_f();
 
+#if 0
 	/* Set pmuxcr to allow both i2c1 and i2c2 */
 	setbits_be32(&gur->pmuxcr, in_be32(&gur->pmuxcr) | 0x1000);
 	setbits_be32(&gur->pmuxcr,
@@ -42,6 +43,7 @@ void board_init_f(ulong bootflag)
 
 #ifdef CONFIG_SPL_SPI_BOOT
 	clrbits_be32(&gur->pmuxcr, MPC85xx_PMUXCR_SD_DATA);
+#endif
 #endif
 
 	/* initialize selected port with appropriate baud rate */

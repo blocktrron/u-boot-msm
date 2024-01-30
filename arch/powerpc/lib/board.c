@@ -670,6 +670,7 @@ void board_init_r(gd_t *id, ulong dest_addr)
 
 	mem_malloc_init(malloc_start, TOTAL_MALLOC_LEN);
 
+#if 0
 #if !defined(CONFIG_SYS_NO_FLASH)
 	puts("Flash: ");
 
@@ -719,6 +720,7 @@ void board_init_r(gd_t *id, ulong dest_addr)
 	bd->bi_flashoffset = monitor_flash_len;	/* reserved area for monitor */
 #endif
 #endif /* !CONFIG_SYS_NO_FLASH */
+#endif
 
 	WATCHDOG_RESET();
 
