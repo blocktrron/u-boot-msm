@@ -26,4 +26,8 @@ obj-y        += ddr.o
 obj-y        += law.o
 obj-y        += tlb.o
 
+ifndef CONFIG_SPL_BUILD
+obj-y        += msm460.o
+endif
+
 endif
