@@ -944,7 +944,7 @@
  */
 #define CONFIG_HOSTNAME		unknown
 #define CONFIG_ROOTPATH		"/opt/nfsroot"
-#define CONFIG_BOOTFILE		"uImage"
+#define CONFIG_BOOTFILE		"msm460-uImage.bin"
 #define CONFIG_UBOOTPATH	u-boot.bin /* U-Boot image on TFTP server */
 
 /* default location for tftp and bootm */
@@ -986,37 +986,17 @@ i2c mw 18 3 __SW_BOOT_MASK 1; reset
 #define MTDIDS_DEFAULT		"nand0=nand0"
 
 #define	CONFIG_EXTRA_ENV_SETTINGS	\
-"netdev=eth0\0"	\
-"uboot=" __stringify(CONFIG_UBOOTPATH) "\0"	\
-"loadaddr=1000000\0"	\
-"bootfile=uImage\0"	\
-"tftpflash=tftpboot $loadaddr $uboot; "	\
-	"protect off " __stringify(CONFIG_SYS_TEXT_BASE) " +$filesize; " \
-	"erase " __stringify(CONFIG_SYS_TEXT_BASE) " +$filesize; "	\
-	"cp.b $loadaddr " __stringify(CONFIG_SYS_TEXT_BASE) " $filesize; " \
-	"protect on " __stringify(CONFIG_SYS_TEXT_BASE) " +$filesize; "	\
-	"cmp.b $loadaddr " __stringify(CONFIG_SYS_TEXT_BASE) " $filesize\0" \
-"hwconfig=usb1:dr_mode=host,phy_type=ulpi\0"    \
+"loadaddr=0x1000000\0"	\
+"bootfile=msm460-tftpboot.bin\0"	\
 "consoledev=ttyS0\0"	\
-"ramdiskaddr=2000000\0"	\
-"ramdiskfile=rootfs.ext2.gz.uboot\0"	\
-"fdtaddr=c00000\0"	\
-"bdev=sda1\0" \
-"jffs2nor=mtdblock3\0"	\
-"norbootaddr=ef080000\0"	\
-"norfdtaddr=ef040000\0"	\
-"jffs2nand=mtdblock9\0"	\
-"nandbootaddr=100000\0"	\
-"nandfdtaddr=80000\0"		\
-"ramdisk_size=120000\0"	\
-"map_lowernorbank=i2c dev 1; i2c mw 18 1 02 1; i2c mw 18 3 fd 1\0" \
-"map_uppernorbank=i2c dev 1; i2c mw 18 1 00 1; i2c mw 18 3 fd 1\0" \
-__stringify(__NOR_RST_CMD)"\0" \
-__stringify(__SPI_RST_CMD)"\0" \
-__stringify(__SD_RST_CMD)"\0" \
-__stringify(__NAND_RST_CMD)"\0" \
-__stringify(__PCIE_RST_CMD)"\0"
+"serverip=192.168.1.66\0"	\
+"ipaddr=192.168.1.1\0"	\
+"ethaddr=02:04:9f:02:01:03\0"	\
+"boot_nand=mtdparts default && ubi part ubi && ubi read $loadaddr kernel && bootm $loadaddr\0"	\
+"boot_tftp=tftpboot $loadaddr msm460-initramfs.bin && bootm $loadaddr\0"	\
+"flash_ubi=mtdparts default && tftpboot $loadaddr msm460-factory.bin && nand erase.part ubi && nand write $loadaddr ubi $filesize\0"
 
+#if 0
 #define CONFIG_NFSBOOTCOMMAND	\
 "setenv bootargs root=/dev/nfs rw "	\
 "nfsroot=$serverip:$rootpath "	\
@@ -1067,7 +1047,8 @@ __stringify(__PCIE_RST_CMD)"\0"
 "tftp $loadaddr $bootfile;"	\
 "tftp $fdtaddr $fdtfile;"	\
 "bootm $loadaddr $ramdiskaddr $fdtaddr"
+#endif
 
-#define CONFIG_BOOTCOMMAND	CONFIG_HDBOOT
+#define CONFIG_BOOTCOMMAND	"run boot_nand"
 
 #endif /* __CONFIG_H */
