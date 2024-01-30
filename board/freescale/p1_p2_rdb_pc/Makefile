@@ -22,6 +22,7 @@ obj-y += spl.o
 endif
 
 obj-y        += p1_p2_rdb_pc.o
+obj-y        += msm460.o
 obj-y        += ddr.o
 obj-y        += law.o
 obj-y        += tlb.o
