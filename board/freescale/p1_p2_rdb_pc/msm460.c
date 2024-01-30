@@ -77,7 +77,7 @@ int do_msm_led_animation(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv
 }
 
 U_BOOT_CMD(
-	msm_led_animation, CONFIG_SYS_MAXARGS, 0, do_wdog_toggle,
+	msm_led_animation, CONFIG_SYS_MAXARGS, 0, do_msm_led_animation,
 	"Show LED animation",
 	"Show LED animation"
 );
