@@ -178,8 +178,14 @@ void board_gpio_init(void)
 	 */
 
 	out_be32(&pgpio->gpdir, 0xf8780000);
+	/* Read Back */
+	in_be32(&pgpio->gpdir);
 	out_be32(&pgpio->gpodr, 0x00000000);
+	/* Read Back */
+	in_be32(&pgpio->gpdir);
 	setbits_be32(&pgpio->gpdat, 0x18780000);
+	/* Read Back */
+	in_be32(&pgpio->gpdat);
 
 #if 0
 #if !defined(CONFIG_SYS_RAMBOOT) && !defined(CONFIG_SPL)
