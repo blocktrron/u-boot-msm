@@ -46,7 +46,7 @@ static void set_led(int mask, int val)
 enum animations {
 	MSM_ANIMATION_PREBOOT = 0,
 	MSM_ANIMATION_RECOVERY_START = 1,
-	MSM_ANIMATION_RECOVERY_SUCCESS = 1,
+	MSM_ANIMATION_RECOVERY_SUCCESS = 2,
 	MSM_ANIMATION_BOOT = 3,
 };
 
@@ -149,7 +149,7 @@ int do_msm_led(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 		#undef	LED_TOGGLE_COUNT
 	} else if (animation == MSM_ANIMATION_BOOT) {
 		#define LED_TOGGLE_DELAY	100
-		#define LED_TOGGLE_COUNT	1
+		#define LED_TOGGLE_COUNT	5
 		for (i = 0; i < LED_TOGGLE_COUNT; i++) {
 			set_led(MSM_GPIO(0), 1);
 			mdelay(LED_TOGGLE_DELAY);
@@ -264,10 +264,6 @@ int do_msm_preboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 			run_command("msmled recovery-success", 0);
 		}
 	}
-		
-
-	/* Reset board on failure */
-	run_command("reset", 0);
 
 	return 0;
 }

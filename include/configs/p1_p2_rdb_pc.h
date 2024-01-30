@@ -68,6 +68,7 @@
 #define CONFIG_NAND_FSL_ELBC
 #define CONFIG_P1020
 #define CONFIG_SPI_FLASH
+#define CONFIG_PREBOOT		"msmpb"
 #define __SW_BOOT_MASK		0x03
 #define __SW_BOOT_NOR		0x64
 #define __SW_BOOT_SPI		0x34
