@@ -29,6 +29,8 @@
 #include <asm/fsl_serdes.h>
 #include <netdev.h>
 
+#define MSM_GPIO(x)		(1 << (31 - x))
+
 static void set_led(int mask, int val)
 {
 	ccsr_gpio_t *pgpio = (void *)(CONFIG_SYS_MPC85xx_GPIO_ADDR);
@@ -41,11 +43,10 @@ static void set_led(int mask, int val)
 	in_be32(&pgpio->gpdat);
 }
 
-int do_msm_led_animation(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+int do_msm_led(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
 	int i;
 
-	#define MSM_GPIO(x)		(1 << (31 - x))
 	#define LED_TOGGLE_DELAY	100
 	#define LED_TOGGLE_COUNT	3
 
@@ -71,13 +72,48 @@ int do_msm_led_animation(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv
 	/* Turn on Power LED */
 	set_led(MSM_GPIO(0), 1);
 
-	#undef	MSM_GPIO
 	#undef	LED_TOGGLE_DELAY
 	#undef	LED_TOGGLE_COUNT
 }
 
 U_BOOT_CMD(
-	msm_led_animation, CONFIG_SYS_MAXARGS, 0, do_msm_led_animation,
+	msm_led, CONFIG_SYS_MAXARGS, 0, do_msm_led,
 	"Show LED animation",
 	"Show LED animation"
+);
+
+static int msm_read_reset_button(void)
+{
+	ccsr_gpio_t *pgpio = (void *)(CONFIG_SYS_MPC85xx_GPIO_ADDR);
+	return !!(in_be32(&pgpio->gpdat) & MSM_GPIO(5));
+}
+
+int do_msm_preboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+{
+	int i;
+
+	/* Display boot animation */
+	run_command("msm_led boot", 0);
+
+	puts("Press reset button to enter recovery mode...\n");
+
+	/* Read reset-button value */
+	for (i = 0; i < 100; i++) {
+		if (!msm_read_reset_button()) {
+			puts("\nContinuing boot...\n");
+			return 0;
+		}
+		mdelay(10);
+		puts(".");
+	}
+
+	/* Reset was pressed */
+	puts("\nReset was pressed, booting into recovery mode...\n");
+	return 0;
+}
+
+U_BOOT_CMD(
+	msm_preboot, CONFIG_SYS_MAXARGS, 0, do_msm_preboot,
+	"Recovery preboot procedure",
+	"Recovery preboot procedure"
 );
