@@ -64,12 +64,10 @@
  * 011101 800 800 400 667 PCIe-2 Core0 boot; Core1 hold-off
  */
 #if defined(CONFIG_P1020RDB_PD)
-#define CONFIG_BOARDNAME "P1020RDB-PD"
+#define CONFIG_BOARDNAME "HP MSM460"
 #define CONFIG_NAND_FSL_ELBC
 #define CONFIG_P1020
 #define CONFIG_SPI_FLASH
-#define CONFIG_VSC7385_ENET
-#define CONFIG_SLIC
 #define __SW_BOOT_MASK		0x03
 #define __SW_BOOT_NOR		0x64
 #define __SW_BOOT_SPI		0x34
@@ -222,8 +220,8 @@
 #define CONFIG_SPL_TEXT_BASE		0xf8f81000
 #define CONFIG_SYS_MPC85XX_NO_RESETVEC
 #define CONFIG_SYS_NAND_U_BOOT_SIZE	(832 << 10)
-#define CONFIG_SYS_NAND_U_BOOT_DST	(0x11000000)
-#define CONFIG_SYS_NAND_U_BOOT_START	(0x11000000)
+#define CONFIG_SYS_NAND_U_BOOT_DST	(0x5000000)
+#define CONFIG_SYS_NAND_U_BOOT_START	(0x5000000)
 #define CONFIG_SYS_NAND_U_BOOT_OFFS	((128 + 128) << 10)
 #elif defined(CONFIG_SPL_BUILD)
 #define CONFIG_SPL_INIT_MINIMAL
@@ -242,7 +240,7 @@
 #define CONFIG_SPL_PAD_TO		0x20000
 #define CONFIG_TPL_PAD_TO		0x20000
 #define CONFIG_SPL_TARGET		"u-boot-with-spl.bin"
-#define CONFIG_SYS_TEXT_BASE		0x11001000
+#define CONFIG_SYS_TEXT_BASE		0x5001000
 #define CONFIG_SYS_LDSCRIPT	"arch/powerpc/cpu/mpc85xx/u-boot-nand.lds"
 #endif
 
@@ -326,14 +324,11 @@
 /* DDR Setup */
 #define CONFIG_SYS_FSL_DDR3
 #define CONFIG_SYS_DDR_RAW_TIMING
-#define CONFIG_DDR_SPD
-#define CONFIG_SYS_SPD_BUS_NUM 1
-#define SPD_EEPROM_ADDRESS 0x52
 #undef CONFIG_FSL_DDR_INTERACTIVE
 
 #if (defined(CONFIG_P1020MBG) || defined(CONFIG_P1020RDB_PD))
-#define CONFIG_SYS_SDRAM_SIZE_LAW	LAW_SIZE_2G
-#define CONFIG_CHIP_SELECTS_PER_CTRL	2
+#define CONFIG_SYS_SDRAM_SIZE_LAW	LAW_SIZE_256M
+#define CONFIG_CHIP_SELECTS_PER_CTRL	1
 #else
 #define CONFIG_SYS_SDRAM_SIZE_LAW	LAW_SIZE_1G
 #define CONFIG_CHIP_SELECTS_PER_CTRL	1
@@ -743,13 +738,15 @@
 #define CONFIG_MII		/* MII PHY management */
 #define CONFIG_TSEC1
 #define CONFIG_TSEC1_NAME	"eTSEC1"
+#if 0
 #define CONFIG_TSEC2
 #define CONFIG_TSEC2_NAME	"eTSEC2"
 #define CONFIG_TSEC3
 #define CONFIG_TSEC3_NAME	"eTSEC3"
+#endif
 
-#define TSEC1_PHY_ADDR	2
-#define TSEC2_PHY_ADDR	0
+#define TSEC1_PHY_ADDR	0
+#define TSEC2_PHY_ADDR	2
 #define TSEC3_PHY_ADDR	1
 
 #define TSEC1_FLAGS	(TSEC_GIGABIT | TSEC_REDUCED)
@@ -765,8 +762,10 @@
 #define CONFIG_PHY_GIGE	1	/* Include GbE speed/duplex detection */
 
 #define CONFIG_HAS_ETH0
+#if 0
 #define CONFIG_HAS_ETH1
 #define CONFIG_HAS_ETH2
+#endif
 #endif /* CONFIG_TSEC_ENET */
 
 #ifdef CONFIG_QE
@@ -838,7 +837,8 @@
 #endif
 #define CONFIG_ENV_IS_IN_NAND
 #define CONFIG_ENV_OFFSET	(1024 * 1024)
-#define CONFIG_ENV_RANGE	(3 * CONFIG_ENV_SIZE)
+#define CONFIG_ENV_RANGE	(4 * CONFIG_ENV_SIZE)
+#define CONFIG_ENV_OFFSET_REDUND	(CONFIG_ENV_OFFSET + CONFIG_ENV_RANGE)
 #elif defined(CONFIG_SYS_RAMBOOT)
 #define CONFIG_ENV_IS_NOWHERE	/* Store ENV in memory only */
 #define CONFIG_ENV_ADDR		(CONFIG_SYS_MONITOR_BASE - 0x1000)
@@ -867,9 +867,18 @@
 #define CONFIG_CMD_SETEXPR
 #define CONFIG_CMD_REGINFO
 
+#define CONFIG_RBTREE
+#define CONFIG_LZO
+#define CONFIG_CMD_UBI
+#define CONFIG_MTD_DEVICE
+#define CONFIG_MTD_PARTITIONS
+#define CONFIG_CMD_MTDPARTS
+#define CONFIG_LZMA
+
 /*
  * USB
  */
+#if 0
 #define CONFIG_HAS_FSL_DR_USB
 
 #if defined(CONFIG_HAS_FSL_DR_USB)
@@ -897,6 +906,7 @@
 #define CONFIG_CMD_EXT2
 #define CONFIG_CMD_FAT
 #define CONFIG_DOS_PARTITION
+#endif
 #endif
 
 #undef CONFIG_WATCHDOG	/* watchdog disabled */
@@ -934,13 +944,13 @@
  */
 #define CONFIG_HOSTNAME		unknown
 #define CONFIG_ROOTPATH		"/opt/nfsroot"
-#define CONFIG_BOOTFILE		"uImage"
+#define CONFIG_BOOTFILE		"msm460-uImage.bin"
 #define CONFIG_UBOOTPATH	u-boot.bin /* U-Boot image on TFTP server */
 
 /* default location for tftp and bootm */
 #define CONFIG_LOADADDR	1000000
 
-#define CONFIG_BOOTDELAY 10	/* -1 disables auto-boot */
+#define CONFIG_BOOTDELAY 3	/* -1 disables auto-boot */
 #define CONFIG_BOOTARGS	/* the boot command will set bootargs */
 
 #define CONFIG_BAUDRATE	115200
@@ -971,38 +981,26 @@ pciboot=i2c dev 1; i2c mw 18 1 __SW_BOOT_PCIE 1; \
 i2c mw 18 3 __SW_BOOT_MASK 1; reset
 #endif
 
-#define	CONFIG_EXTRA_ENV_SETTINGS	\
-"netdev=eth0\0"	\
-"uboot=" __stringify(CONFIG_UBOOTPATH) "\0"	\
-"loadaddr=1000000\0"	\
-"bootfile=uImage\0"	\
-"tftpflash=tftpboot $loadaddr $uboot; "	\
-	"protect off " __stringify(CONFIG_SYS_TEXT_BASE) " +$filesize; " \
-	"erase " __stringify(CONFIG_SYS_TEXT_BASE) " +$filesize; "	\
-	"cp.b $loadaddr " __stringify(CONFIG_SYS_TEXT_BASE) " $filesize; " \
-	"protect on " __stringify(CONFIG_SYS_TEXT_BASE) " +$filesize; "	\
-	"cmp.b $loadaddr " __stringify(CONFIG_SYS_TEXT_BASE) " $filesize\0" \
-"hwconfig=usb1:dr_mode=host,phy_type=ulpi\0"    \
-"consoledev=ttyS0\0"	\
-"ramdiskaddr=2000000\0"	\
-"ramdiskfile=rootfs.ext2.gz.uboot\0"	\
-"fdtaddr=c00000\0"	\
-"bdev=sda1\0" \
-"jffs2nor=mtdblock3\0"	\
-"norbootaddr=ef080000\0"	\
-"norfdtaddr=ef040000\0"	\
-"jffs2nand=mtdblock9\0"	\
-"nandbootaddr=100000\0"	\
-"nandfdtaddr=80000\0"		\
-"ramdisk_size=120000\0"	\
-"map_lowernorbank=i2c dev 1; i2c mw 18 1 02 1; i2c mw 18 3 fd 1\0" \
-"map_uppernorbank=i2c dev 1; i2c mw 18 1 00 1; i2c mw 18 3 fd 1\0" \
-__stringify(__NOR_RST_CMD)"\0" \
-__stringify(__SPI_RST_CMD)"\0" \
-__stringify(__SD_RST_CMD)"\0" \
-__stringify(__NAND_RST_CMD)"\0" \
-__stringify(__PCIE_RST_CMD)"\0"
+/* 768k u-boot - 2*128kB bid - 4*128kB uenv0 - 4*128kB uenv1 - 99MB UBI*/
+#define MTDPARTS_DEFAULT	"mtdparts=nand0:768k(uboot),256k(colubris-bid),512k(uboot-env0),512k(uboot-env1),3m(reserved),95m(ubi)"
+#define MTDIDS_DEFAULT		"nand0=nand0"
 
+#define	CONFIG_EXTRA_ENV_SETTINGS	\
+"loadaddr=0x1000000\0"	\
+"bootfile=msm460-tftpboot.bin\0"	\
+"consoledev=ttyS0\0"	\
+"serverip=192.168.1.66\0"	\
+"ipaddr=192.168.1.1\0"	\
+"ethaddr=02:04:9f:02:01:03\0"	\
+"bid_read=mtdparts default && nand read 0x7000000 colubris-bid 0x40000\0"	\
+"bid_write=mtdparts default && nand write 0x7000000 colubris-bid 0x40000\0"	\
+"boot_nand=mtdparts default && ubi part ubi && ubi read $loadaddr kernel && bootm $loadaddr\0"	\
+"boot_tftp=tftpboot $loadaddr msm460-initramfs.bin && bootm $loadaddr\0"	\
+"flash_ubi=mtdparts default && tftpboot $loadaddr msm460-factory.bin && nand erase.part ubi && nand write $loadaddr ubi $filesize\0"	\
+"flash_uboot=mtdparts default && tftpboot $loadaddr msm460-uboot.bin && nand erase.part uboot && nand write $loadaddr uboot $filesize\0"	\
+"fdt_high=0x3000000\0"
+
+#if 0
 #define CONFIG_NFSBOOTCOMMAND	\
 "setenv bootargs root=/dev/nfs rw "	\
 "nfsroot=$serverip:$rootpath "	\
@@ -1053,7 +1051,8 @@ __stringify(__PCIE_RST_CMD)"\0"
 "tftp $loadaddr $bootfile;"	\
 "tftp $fdtaddr $fdtfile;"	\
 "bootm $loadaddr $ramdiskaddr $fdtaddr"
+#endif
 
-#define CONFIG_BOOTCOMMAND	CONFIG_HDBOOT
+#define CONFIG_BOOTCOMMAND	"run boot_nand"
 
 #endif /* __CONFIG_H */

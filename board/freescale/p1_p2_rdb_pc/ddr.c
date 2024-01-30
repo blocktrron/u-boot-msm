@@ -81,35 +81,35 @@ dimm_params_t ddr_raw_timing = {
 	.tfaw_ps = 30000,
 };
 #elif (defined(CONFIG_P1020MBG) || defined(CONFIG_P1020RDB_PD))
-/* Micron MT41J512M8_187E */
+/* MT41J64M16JT-15E:G (FBGA: D9MNJ) */
 dimm_params_t ddr_raw_timing = {
-	.n_ranks = 2,
-	.rank_density = 1073741824u,
-	.capacity = 2147483648u,
+	.n_ranks = 1,
+	.rank_density = 268435456u,
+	.capacity = 268435456u,
 	.primary_sdram_width = 32,
 	.ec_sdram_width = 0,
 	.registered_dimm = 0,
 	.mirrored_dimm = 0,
-	.n_row_addr = 15,
+	.n_row_addr = 13,
 	.n_col_addr = 10,
 	.n_banks_per_sdram_device = 8,
 	.edc_config = 0,
 	.burst_lengths_bitmask = 0x0c,
 
-	.tckmin_x_ps = 1870,
-	.caslat_x = 0x1e << 4,	/* 5,6,7,8 */
-	.taa_ps = 13125,
+	.tckmin_x_ps = 1500,
+	.caslat_x = 0x7e << 4,	/* 5,6,7,8,9,10 */
+	.taa_ps = 13500,
 	.twr_ps = 15000,
-	.trcd_ps = 13125,
-	.trrd_ps = 7500,
-	.trp_ps = 13125,
-	.tras_ps = 37500,
-	.trc_ps = 50625,
+	.trcd_ps = 13500,
+	.trrd_ps = 6000,
+	.trp_ps = 13500,
+	.tras_ps = 36000,
+	.trc_ps = 49500,
 	.trfc_ps = 160000,
 	.twtr_ps = 7500,
 	.trtp_ps = 7500,
 	.refresh_rate_ps = 7800000,
-	.tfaw_ps = 37500,
+	.tfaw_ps = 30000,
 };
 #elif defined(CONFIG_P1020RDB_PC)
 /*
