@@ -982,8 +982,8 @@ pciboot=i2c dev 1; i2c mw 18 1 __SW_BOOT_PCIE 1; \
 i2c mw 18 3 __SW_BOOT_MASK 1; reset
 #endif
 
-/* 1024kB u-boot - 3*128kB uenv0 - 3*128kB uenv1 - 72MB UBI*/
-#define MTDPARTS_DEFAULT	"mtdparts=nand0:0xc0000@0x0(uboot),0x40000@0xc0000(colubris-bid),0x80000@0x100000(uboot-env0),0x80000@0x180000(uboot-env1),0x4800000@0x200000(ubi)"
+/* 768k u-boot - 2*128kB bid - 4*128kB uenv0 - 4*128kB uenv1 - 99MB UBI*/
+#define MTDPARTS_DEFAULT	"mtdparts=nand0:768k(uboot),256k(colubris-bid),512k(uboot-env0),512k(uboot-env1),99m(ubi)"
 #define MTDIDS_DEFAULT		"nand0=nand0"
 
 #define	CONFIG_EXTRA_ENV_SETTINGS	\
@@ -996,6 +996,7 @@ i2c mw 18 3 __SW_BOOT_MASK 1; reset
 "boot_nand=mtdparts default && ubi part ubi && ubi read $loadaddr kernel && bootm $loadaddr\0"	\
 "boot_tftp=tftpboot $loadaddr msm460-initramfs.bin && bootm $loadaddr\0"	\
 "flash_ubi=mtdparts default && tftpboot $loadaddr msm460-factory.bin && nand erase.part ubi && nand write $loadaddr ubi $filesize\0"	\
+"flash_uboot=mtdparts default && tftpboot $loadaddr msm460-uboot.bin && nand erase.part uboot && nand write $loadaddr uboot $filesize\0"	\
 "recoverycmd=run flash_ubi\0"	\
 "fdt_high=0x3000000\0"
 
