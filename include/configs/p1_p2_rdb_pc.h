@@ -838,8 +838,8 @@
 #endif
 #define CONFIG_ENV_IS_IN_NAND
 #define CONFIG_ENV_OFFSET	(1024 * 1024)
-#define CONFIG_ENV_OFFSET_REDUND	(CONFIG_ENV_OFFSET + CONFIG_ENV_SIZE)
-#define CONFIG_ENV_RANGE	(3 * CONFIG_ENV_SIZE)
+#define CONFIG_ENV_RANGE	(4 * CONFIG_ENV_SIZE)
+#define CONFIG_ENV_OFFSET_REDUND	(CONFIG_ENV_OFFSET + CONFIG_ENV_RANGE)
 #elif defined(CONFIG_SYS_RAMBOOT)
 #define CONFIG_ENV_IS_NOWHERE	/* Store ENV in memory only */
 #define CONFIG_ENV_ADDR		(CONFIG_SYS_MONITOR_BASE - 0x1000)
@@ -983,7 +983,7 @@ i2c mw 18 3 __SW_BOOT_MASK 1; reset
 #endif
 
 /* 1024kB u-boot - 3*128kB uenv0 - 3*128kB uenv1 - 72MB UBI*/
-#define MTDPARTS_DEFAULT	"mtdparts=nand0:0x100000@0x0(uboot),0x60000@0x100000(ubootenv),0x60000@0x160000(ubootres),0x4800000@0x1c0000(ubi)"
+#define MTDPARTS_DEFAULT	"mtdparts=nand0:0xc0000@0x0(uboot),0x40000@0xc0000(colubris-bid),0x80000@0x100000(uboot-env0),0x80000@0x180000(uboot-env1),0x4800000@0x200000(ubi)"
 #define MTDIDS_DEFAULT		"nand0=nand0"
 
 #define	CONFIG_EXTRA_ENV_SETTINGS	\
