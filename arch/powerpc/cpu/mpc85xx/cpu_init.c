@@ -642,7 +642,7 @@ skip_l2:
 #endif
 #endif
 
-#if defined(CONFIG_MP)
+#if (defined(CONFIG_MP) && !defined(CONFIG_RAMBOOT))
 	setup_mp();
 #endif
 

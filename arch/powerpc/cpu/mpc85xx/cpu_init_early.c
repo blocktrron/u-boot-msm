@@ -101,7 +101,11 @@ void cpu_init_early_f(void)
 	 */
 	for (i = 0; i < sizeof(gd_t); i++)
 		((char *)gd)[i] = 0;
-
+	
+#ifdef CONFIG_RAMBOOT
+	/* Don't invalidate TLBs*/
+	return;
+#endif
 	mas0 = MAS0_TLBSEL(1) | MAS0_ESEL(13);
 	mas1 = MAS1_VALID | MAS1_TID(0) | MAS1_TS | MAS1_TSIZE(BOOKE_PAGESZ_1M);
 	mas2 = FSL_BOOKE_MAS2(CONFIG_SYS_CCSRBAR, MAS2_I|MAS2_G);
