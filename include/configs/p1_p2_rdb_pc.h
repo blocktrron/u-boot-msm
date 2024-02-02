@@ -999,7 +999,7 @@ i2c mw 18 3 __SW_BOOT_MASK 1; reset
 #endif
 
 /* 768k u-boot - 2*128kB bid - 4*128kB uenv0 - 4*128kB uenv1 - 99MB UBI*/
-#define MTDPARTS_DEFAULT	"mtdparts=nand0:768k(uboot),256k(colubris-bid),512k(uboot-env0),512k(uboot-env1),4m(reserved),95m(ubi)"
+#define MTDPARTS_DEFAULT	"mtdparts=nand0:768k(uboot),256k(colubris-bid),512k(uboot-env0),512k(uboot-env1),3m(reserved),95m(ubi)"
 #define MTDIDS_DEFAULT		"nand0=nand0"
 
 #define	CONFIG_EXTRA_ENV_SETTINGS	\
