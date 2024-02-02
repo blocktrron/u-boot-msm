@@ -37,8 +37,14 @@ jobs:
             - name: List Output Folder
               run: ls -la
 
-            - name: Upload artifact
+            - name: Upload RAM
               uses: actions/upload-artifact@v2
               with:
-                name: u-boot
+                name: u-boot-ram
+                path: u-boot.bin
+
+            - name: Upload NAND
+              uses: actions/upload-artifact@v2
+              with:
+                name: u-boot-nand
                 path: u-boot-with-spl.bin
