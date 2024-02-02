@@ -7,6 +7,9 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
+        strategy: 
+          matrix:
+            target: [ NAND, RAMBOOT ]
         container:
             image: debian:buster
 
@@ -29,16 +32,29 @@ jobs:
             
             - name: Create Config
               run: |
-                make P1020RDB-PD_NAND_config
+                make P1020RDB-PD_${{ matrix.target }}_config
               
             - name: Compile U-Boot
               run: make CROSS_COMPILE="/tmp/OpenWrt-SDK-mpc85xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2/staging_dir/toolchain-powerpc_8540_gcc-4.8-linaro_uClibc-0.9.33.2/bin/powerpc-openwrt-linux-"
 
             - name: List Output Folder
               run: ls -la
+            
+            - name: Align NAND loader to blocksize
+              if: matrix.target == 'NAND'
+              run: |
+                dd if=u-boot-with-spl.bin of=u-boot-with-spl-aligned.bin bs=786432 count=1
 
-            - name: Upload artifact
+            - name: Upload RAM
+              if: matrix.target == 'RAMBOOT'
               uses: actions/upload-artifact@v2
               with:
-                name: u-boot
-                path: u-boot-with-spl.bin
+                name: u-boot-ram
+                path: u-boot.bin
+
+            - name: Upload NAND
+              if: matrix.target == 'NAND'
+              uses: actions/upload-artifact@v2
+              with:
+                name: u-boot-nand
+                path: u-boot-with-spl-aligned.bin
