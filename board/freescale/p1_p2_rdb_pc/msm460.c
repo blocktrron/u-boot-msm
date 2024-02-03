@@ -172,6 +172,7 @@ int do_msm_led(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	/* Turn on Power LED */
 	set_led(MSM_GPIO(0), 1);
 
+	return 0;
 }
 
 U_BOOT_CMD(
