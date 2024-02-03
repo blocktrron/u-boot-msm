@@ -265,6 +265,9 @@ int do_msm_preboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 	puts("Hewlett-Packard MSM460 Pre-Boot\n");
 
+	/* Display and set mac-address */
+	run_command("msmmac", 0);
+
 	/* Display preboot animation */
 	run_command("msmled preboot", 0);
 
@@ -310,6 +313,9 @@ static int msm_parse_ethaddr(char *address_string, uchar *output)
 int do_msm_setmac(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
 	uchar *bdinfo_buf = (uchar *)0x7000000;
+	uchar *eth_mac = bdinfo_buf + 0x1F822;
+	uchar *wlan_mac = bdinfo_buf + 0x1F9BD;
+	char env_mac[17];
 	int ret;
 
 	if (argc == 2 || argc  > 3) {
@@ -323,18 +329,24 @@ int do_msm_setmac(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	}
 
 	if (argc == 1) {
-		printf("Ethernet MAC address: %pM\n", bdinfo_buf + 0x1F822);
-		printf("WLAN MAC address: %pM\n", bdinfo_buf + 0x1F9BD);
+		printf("Ethernet MAC address: %pM\n", eth_mac);
+		printf("WLAN MAC address: %pM\n", wlan_mac);
+
+		/* Set in env */
+		sprintf(env_mac, "%02X:%02X:%02X:%02X:%02X:%02X",
+		eth_mac[0], eth_mac[1], eth_mac[2], eth_mac[3], eth_mac[4], eth_mac[5]);
+		setenv("ethaddr", env_mac);
+
 		return 0;
 	}
 
-	ret = msm_parse_ethaddr(argv[1], bdinfo_buf + 0x1F822);
+	ret = msm_parse_ethaddr(argv[1], eth_mac);
 	if (ret) {
 		printf("Invalid Ethernet MAC address\n");
 		return 1;
 	}
 
-	ret = msm_parse_ethaddr(argv[2], bdinfo_buf + 0x1F9BD);
+	ret = msm_parse_ethaddr(argv[2], wlan_mac);
 	if (ret) {
 		printf("Invalid WLAN MAC address\n");
 		return 1;
