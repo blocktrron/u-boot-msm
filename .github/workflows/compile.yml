@@ -27,6 +27,7 @@ jobs:
 
           - name: Fetch upstream tags
             run: |
+              git config --global --add safe.directory '*'
               git remote add upstream https://github.com/u-boot/u-boot.git
               git fetch upstream --tags  
 
