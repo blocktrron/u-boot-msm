@@ -385,6 +385,9 @@ int do_msm_setip(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	ip_addr_dev = (enet_addr[0] + enet_addr[1] + enet_addr[2] + enet_addr[3] + enet_addr[4] + enet_addr[5]) % 20;
 	ip_addr_dev += 100;
 
+	/* Print IP-Address */
+	printf("Device IP-Address: 192.168.1.%d\n", ip_addr_dev);
+
 	/* Set ipaddr to 192.168.1.<ip_addr_dev> */
 	setenv("ipaddr", "192.168.1.%d", ip_addr_dev);
 
