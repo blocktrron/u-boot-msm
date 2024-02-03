@@ -365,3 +365,34 @@ U_BOOT_CMD(
 	"Set board MAC address",
 	"<eth-mac-address> <wlan-mac-address>"
 );
+
+int do_msm_setip(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+{
+	char enet_addr[6];
+	unsigned int ip_addr_dev;
+	int ret;
+
+	if (argc > 1) {
+		printf("Usage: msmmac <eth-mac-address> <wlan-mac-address>\n");
+		return 1;
+	}
+
+	eth_getenv_enetaddr("ethaddr", enet_addr);
+
+	/* Device-IP will be in Range 192.168.1.[100-199] */
+
+	/* Sum all octets of mac-address and modulo 100 */
+	ip_addr_dev = (enet_addr[0] + enet_addr[1] + enet_addr[2] + enet_addr[3] + enet_addr[4] + enet_addr[5]) % 20;
+	ip_addr_dev += 100;
+
+	/* Set ipaddr to 192.168.1.<ip_addr_dev> */
+	setenv("ipaddr", "192.168.1.%d", ip_addr_dev);
+
+	return 0;
+}
+
+U_BOOT_CMD(
+	msmip, CONFIG_SYS_MAXARGS, 0, do_msm_setip,
+	"Set board IP address",
+	""
+);
