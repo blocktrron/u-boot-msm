@@ -3,7 +3,6 @@ name: Compile U-Boot
 on:
     push:
 
-
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -16,8 +15,13 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v2
+            
+            - name: Fetch upstream tags
+              run: |
+                git remote add upstream https://github.com/u-boot/u-boot.git
+                git fetch upstream --tags
 
-            - name: Set up toolchain
+            - name: Install build dependendies
               run: |
                 apt-get update
                 apt-get install -y build-essential git flex bison wget
