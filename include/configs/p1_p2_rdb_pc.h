@@ -1069,6 +1069,7 @@ i2c mw 18 3 __SW_BOOT_MASK 1; reset
 "bootm $loadaddr $ramdiskaddr $fdtaddr"
 #endif
 
-#define CONFIG_BOOTCOMMAND	"run boot_nand; run flash_ubi"
+/* Enter Recovery if boot fails */
+#define CONFIG_BOOTCOMMAND	"run boot_nand; msmrec"
 
 #endif /* __CONFIG_H */
