@@ -371,7 +371,8 @@ U_BOOT_CMD(
 
 int do_msm_setip(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
-	char enet_addr[6];
+	uchar enet_addr[6];
+	char ip_addr_str[16];
 	unsigned int ip_addr_dev;
 	int ret;
 
@@ -392,7 +393,8 @@ int do_msm_setip(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	printf("Device IP-Address: 192.168.1.%d\n", ip_addr_dev);
 
 	/* Set ipaddr to 192.168.1.<ip_addr_dev> */
-	setenv("ipaddr", "192.168.1.%d", ip_addr_dev);
+	snprintf(ip_addr_str, 16, "192.168.1.%d", ip_addr_dev);
+	setenv("ipaddr", ip_addr_str);
 
 	return 0;
 }
