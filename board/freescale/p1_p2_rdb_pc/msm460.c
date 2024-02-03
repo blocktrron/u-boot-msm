@@ -268,6 +268,9 @@ int do_msm_preboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	/* Display and set mac-address */
 	run_command("msmmac", 0);
 
+	/* Display and set IP-address */
+	run_command("msmip", 0);
+
 	/* Display preboot animation */
 	run_command("msmled preboot", 0);
 
