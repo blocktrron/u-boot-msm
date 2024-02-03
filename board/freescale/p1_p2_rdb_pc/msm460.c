@@ -328,13 +328,13 @@ int do_msm_setmac(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 		return 0;
 	}
 
-	ret = msm_parse_ethaddr(argv[2], bdinfo_buf + 0x1F822);
+	ret = msm_parse_ethaddr(argv[1], bdinfo_buf + 0x1F822);
 	if (ret) {
 		printf("Invalid Ethernet MAC address\n");
 		return 1;
 	}
 
-	ret = msm_parse_ethaddr(argv[3], bdinfo_buf + 0x1F9BD);
+	ret = msm_parse_ethaddr(argv[2], bdinfo_buf + 0x1F9BD);
 	if (ret) {
 		printf("Invalid WLAN MAC address\n");
 		return 1;
