@@ -1009,6 +1009,8 @@ i2c mw 18 3 __SW_BOOT_MASK 1; reset
 "serverip=192.168.1.66\0"	\
 "ipaddr=192.168.1.1\0"	\
 "ethaddr=02:04:9f:02:01:03\0"	\
+"bid_read=mtdparts default && nand read 0x7000000 colubris-bid 0x40000\0"	\
+"bid_write=mtdparts default && nand write 0x7000000 colubris-bid 0x40000\0"	\
 "boot_nand=mtdparts default && ubi part ubi && ubi read $loadaddr kernel && bootm $loadaddr\0"	\
 "boot_tftp=tftpboot $loadaddr msm460-initramfs.bin && bootm $loadaddr\0"	\
 "flash_ubi=mtdparts default && tftpboot $loadaddr msm460-factory.bin && nand erase.part ubi && nand write $loadaddr ubi $filesize\0"	\
