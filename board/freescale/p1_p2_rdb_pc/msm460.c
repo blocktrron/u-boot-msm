@@ -224,7 +224,7 @@ int do_msm_reset(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 U_BOOT_CMD(
 	msmrst, CONFIG_SYS_MAXARGS, 0, do_msm_reset,
 	"Check reset button state",
-	"Return 0 if reset button is pressed, 1 otherwise"
+	"[duration-sec]"
 );
 
 int do_msm_recovery(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
@@ -254,8 +254,8 @@ int do_msm_recovery(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 U_BOOT_CMD(
 	msmrec, CONFIG_SYS_MAXARGS, 0, do_msm_recovery,
-	"Check reset button state",
-	"Return 0 if reset button is pressed, 1 otherwise"
+	"Start TFTP UBI recovery",
+	""
 );
 
 int do_msm_preboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
@@ -290,6 +290,60 @@ int do_msm_preboot(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 U_BOOT_CMD(
 	msmpb, CONFIG_SYS_MAXARGS, 0, do_msm_preboot,
-	"Recovery preboot procedure",
-	"Recovery preboot procedure"
+	"Preboot procedure",
+	"This will start the preboot procedure checking for reset button press"
+);
+
+static int msm_parse_ethaddr(char *address_string, uchar *output)
+{
+	uchar enetaddr[6];
+
+	eth_parse_enetaddr(address_string, enetaddr);
+	if (is_valid_ether_addr(enetaddr)) {
+		memcpy(output, enetaddr, 6);
+		return 0;
+	}
+
+	return -1;
+}
+
+int do_msm_setmac(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+{
+	uchar *bdinfo_buf = (uchar *)0x7000000;
+	int ret;
+
+	if (argc  != 3) {
+		printf("Usage: msmmac <eth-mac-address> <wlan-mac-address>\n");
+		return 1;
+	}
+
+	if (run_command("run bid_read", 0)) {
+		printf("Failed to read bdinfo\n");
+		return 1;
+	}
+
+	ret = msm_parse_ethaddr(argv[2], bdinfo_buf + 0x1F822);
+	if (ret) {
+		printf("Invalid Ethernet MAC address\n");
+		return 1;
+	}
+
+	ret = msm_parse_ethaddr(argv[3], bdinfo_buf + 0x1F9BD);
+	if (ret) {
+		printf("Invalid WLAN MAC address\n");
+		return 1;
+	}
+
+	if (run_command("run bid_write", 0)) {
+		printf("Failed to read bdinfo\n");
+		return 1;
+	}
+
+	return 0;
+}
+
+U_BOOT_CMD(
+	msmmac, CONFIG_SYS_MAXARGS, 0, do_msm_setmac,
+	"Set board MAC address",
+	"<eth-mac-address> <wlan-mac-address>"
 );
