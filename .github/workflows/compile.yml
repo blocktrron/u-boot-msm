@@ -56,14 +56,14 @@ jobs:
 
           - name: Upload RAM
             if: matrix.target == 'RAMBOOT'
-            uses: actions/upload-artifact@v2
+            uses: actions/upload-artifact@v4
             with:
               name: u-boot-ram
               path: u-boot.bin
 
           - name: Upload NAND
             if: matrix.target == 'NAND'
-            uses: actions/upload-artifact@v2
+            uses: actions/upload-artifact@v4
             with:
               name: u-boot-nand
               path: u-boot-with-spl-aligned.bin
