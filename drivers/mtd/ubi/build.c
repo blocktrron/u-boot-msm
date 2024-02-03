@@ -798,11 +798,13 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
 		goto out_free;
 	}
 
+#if 0
 	if (ubi->autoresize_vol_id != -1) {
 		err = autoresize(ubi, ubi->autoresize_vol_id);
 		if (err)
 			goto out_detach;
 	}
+#endif
 
 	err = uif_init(ubi);
 	if (err)
