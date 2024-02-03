@@ -312,7 +312,7 @@ int do_msm_setmac(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	uchar *bdinfo_buf = (uchar *)0x7000000;
 	int ret;
 
-	if (argc  != 3) {
+	if (argc == 2 || argc  > 3) {
 		printf("Usage: msmmac <eth-mac-address> <wlan-mac-address>\n");
 		return 1;
 	}
@@ -320,6 +320,12 @@ int do_msm_setmac(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	if (run_command("run bid_read", 0)) {
 		printf("Failed to read bdinfo\n");
 		return 1;
+	}
+
+	if (argc == 1) {
+		printf("Ethernet MAC address: %pM\n", bdinfo_buf + 0x1F822);
+		printf("WLAN MAC address: %pM\n", bdinfo_buf + 0x1F9BD);
+		return 0;
 	}
 
 	ret = msm_parse_ethaddr(argv[2], bdinfo_buf + 0x1F822);
