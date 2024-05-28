@@ -965,7 +965,7 @@
 #define CONFIG_UBOOTPATH	u-boot.bin /* U-Boot image on TFTP server */
 
 /* default location for tftp and bootm */
-#define CONFIG_LOADADDR	1000000
+#define CONFIG_LOADADDR	4000000		/* 64M */
 
 #define CONFIG_BOOTDELAY 3	/* -1 disables auto-boot */
 #define CONFIG_BOOTARGS	/* the boot command will set bootargs */
@@ -1003,7 +1003,7 @@ i2c mw 18 3 __SW_BOOT_MASK 1; reset
 #define MTDIDS_DEFAULT		"nand0=nand0"
 
 #define	CONFIG_EXTRA_ENV_SETTINGS	\
-"loadaddr=0x1000000\0"	\
+"loadaddr=0x4000000\0"	\
 "bootfile=msm460-tftpboot.bin\0"	\
 "consoledev=ttyS0\0"	\
 "serverip=192.168.1.66\0"	\
